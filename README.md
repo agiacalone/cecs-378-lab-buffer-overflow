@@ -1,4 +1,4 @@
-# CECS 378 Lab 3 - Buffer Overflow
+# CECS 378 Lab: Buffer Overflow
 
 ## Assignment Description
 
