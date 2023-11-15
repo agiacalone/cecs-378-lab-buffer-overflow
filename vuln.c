@@ -20,4 +20,3 @@ int exploitable(char *arg) {
 	// Return: everything fun  
 	return(0); 
 }
-
