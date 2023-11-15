@@ -37,7 +37,17 @@ Note: when running many versions of Linux, you may need to [disable some address
 
 ## Deliverables
 
-Submit your `exploit.c` to Github Classroom along with a writeup of how you attempted the stack smashing attack and screenshots of the output or result of a successful attack. If you are not able to succeed with the attack due to OS constraints, detail that in your writeup and explain how you would go about performing such an attack on this system (along with your C code).
+Submit your `exploit.c` to your git repository along with:
+
+* A writeup of how you attempted the stack smashing attack. 
+* At least one screenshot of the output or result of a successful attack. 
+    * If you are not able to succeed with the attack due to OS constraints, detail that in your writeup and explain how you would go about performing such an attack on this system (along with your C code).
+
+### Please note:
+
+* Your writeup *must* be done in [Markdown](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax) format and must be included in the repository as a separate file. View the file [`README.md`](README.md?plain=1) for an example of Markdown.
+* Screenshots should be done in `*.jpg`, `*.png`, or `*.gif` formats, and be included individually as files in your repository (i.e. no binary ‘document’ with the images pasted inside). Screenshots which are too zoomed-in, which do not show your desktop, or are otherwise unidentifiable as belonging to you will not be counted.
+* Screenshots *may* be linked in your Markdown file writeup if you wish to do so.
 
 Your submission must follow the following rules, else *I will not grade it and you will receive a zero for the submission*:
 
