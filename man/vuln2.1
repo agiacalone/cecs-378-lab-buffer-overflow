@@ -1,0 +1,85 @@
+.TH VULN2 1 "2026-04-27" "CECS 378" "CECS 378 Buffer Overflow Lab"
+.SH NAME
+vuln2 \- Phase Omega target; deliberately vulnerable program (see phase-omega(7))
+.SH SYNOPSIS
+.B vuln2
+.B <
+.I PAYLOAD
+.br
+.B vuln2
+.B \-h | \-\-help
+.br
+.B vuln2
+.B \-V | \-\-version
+.SH DESCRIPTION
+If you have not read
+.BR mainframe (7),
+do so first. The attack approach is in
+.BR phase-omega (7).
+
+.B vuln2
+is the second target. Its source is identical to
+.BR vuln1 (1).
+Two things differ. First, the linker no longer marks the stack
+executable:
+
+.RS
+.nf
+gcc -m32 -fno-stack-protector -no-pie
+.fi
+.RE
+
+That single linker flag removal is the entire lesson of Phase Omega.
+Your Phase Phi exploit will fail against this binary; explaining why
+in your writeup is required.
+
+Second, vuln2 is built with
+.B \-DLEAK_LIBC
+so that, in addition to the addresses of its stack buffer and saved-EIP
+slot, it also prints the runtime address of
+.BR printf (3)
+in libc. The full leak header looks like:
+.RS
+.nf
+[buffer @ 0x\fIADDR\fP, size N, pad K]
+[saved-eip @ 0x\fIADDR\fP]
+[libc-printf @ 0x\fIADDR\fP]
+.fi
+.RE
+The libc-printf leak gives ret2libc the foothold it needs under
+.B ASLR
+without resorting to a separate-process leak.
+
+It is installed setuid to user
+.BR oracle (8),
+who reads
+.IR /srv/flag2.txt .
+
+.SH OPTIONS
+.TP
+.BR \-h ", " \-\-help
+Print a usage summary to standard output and exit 0.
+.TP
+.BR \-V ", " \-\-version
+Print the program version to standard output and exit 0.
+.SH EXIT STATUS
+.TP
+.B 0
+Normal exit.
+.TP
+.B 2
+Misuse (unrecognized argument).
+.SH FILES
+.TP
+.I /srv/flag2.txt
+The flag file readable only by user
+.BR oracle .
+.SH SEE ALSO
+.BR phase-omega (7),
+.BR mainframe (7),
+.BR vuln1 (1),
+.BR oracle (8),
+.BR strcpy (3),
+.BR execstack (8)
+.SH BUGS
+The program is still the bug.

@@ -1,0 +1,75 @@
+                    OPERATION SUNDEVIL -- A SUMMARY
+                    ===============================
+
+      Compiled from the public record. Use as a starting point;
+      Bruce Sterling's "The Hacker Crackdown" (1992) is the
+      definitive book on the period if you want depth.
+
+[--[ WHAT HAPPENED ]--]
+
+On May 8 and 9, 1990, U.S. Secret Service agents executed search
+warrants in fourteen U.S. cities -- among them Phoenix, Newark,
+Tucson, Cincinnati, Pittsburgh, Detroit, San Diego, Los Angeles, San
+Jose, Plano, San Francisco, Richmond, Chicago, and New York. The
+operation was named SunDevil after the Arizona State University
+mascot, reflecting that the U.S. Attorney for Arizona was the lead.
+
+Forty-two computer systems were seized. Over twenty thousand
+floppy disks were carted off. Several BBSs went dark with no
+warning to their users; some were never returned to their owners.
+
+The stated targets were credit-card and long-distance-toll fraud
+rings. The actual scope, as it became clear over the following
+months, was considerably broader and considerably less precise.
+
+[--[ THE STEVE JACKSON GAMES RAID ]--]
+
+Not technically part of Sundevil, but executed by the same Secret
+Service unit two months earlier (March 1, 1990) and conflated with
+it in popular memory: agents raided the offices of Steve Jackson
+Games in Austin. They seized the company's BBS, several computers,
+and the manuscript drafts of an unreleased role-playing game called
+GURPS Cyberpunk. The raid was based on the assertion that one of
+SJG's employees had received a copy of an internal BellSouth
+document concerning the 911 system -- a document that, by the time
+the case went to trial in 1993, was shown to be available from
+BellSouth itself for $13.
+
+Steve Jackson Games sued the federal government and won. The case
+was the foundational fact for the Electronic Frontier Foundation,
+which incorporated in July 1990 specifically to address the legal
+posture of computer users in the wake of these raids.
+
+[--[ WHAT MATTERS ABOUT IT ]--]
+
+The Sundevil raids and the Steve Jackson Games case did three
+things that still shape the field today:
+
+  1. They established that the line between "system administrator
+     who knows things" and "criminal" was, at the time, drawn
+     almost entirely by the prosecutor. People who ran BBSs
+     learned to expect that anything on their disk could be
+     evidence, and that being a hobbyist sysop did not protect
+     them from a 4 AM door knock.
+
+  2. They created the political conditions for the EFF, the
+     Computer Fraud and Abuse Act case law that followed, and
+     the long-running argument over whether security research
+     can be conducted lawfully at all.
+
+  3. They taught the underground that PR matters. The raids made
+     "hacker" a household word for the first time, and the
+     defenders -- Steve Jackson, Mitch Kapor, John Perry Barlow --
+     framed the conversation in terms of civil liberties rather
+     than criminal mischief. That framing largely held.
+
+[--[ FURTHER READING ]--]
+
+  Bruce Sterling, "The Hacker Crackdown" (1992).
+      Released to the public domain by the author in 1994; widely
+      mirrored. Required reading for context.
+
+  Mitch Kapor and John Perry Barlow, "Across the Electronic
+      Frontier" (1990). The EFF founding essay.
+
+  U.S. v. Riggs (1991). The 911-document case.
