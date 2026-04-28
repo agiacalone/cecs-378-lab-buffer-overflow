@@ -1,0 +1,68 @@
+                          FIDONET -- AN OVERVIEW
+                          ======================
+
+FidoNet is the way BBSs talk to each other. It exists because phone
+calls cost money, and a long-distance call from Cleveland to a
+single-line BBS in Sydney to read message bases is unsustainable.
+
+FidoNet solves this with a relay tree.
+
+[--[ ADDRESSING ]--]
+
+A FidoNet address is "zone:net/node" or "zone:net/node.point":
+
+    1:202/420       Tom Jennings, the original
+    1:13/13         Some node
+    2:201/100.1     A point off node 100 in net 201, zone 2
+
+Zones partition the world: 1=North America, 2=Europe, 3=Pacific,
+4=Latin America, 5=Africa, 6=Asia. Inside a zone, nets are regions;
+inside a net, nodes are individual BBSs. Points are users who
+receive mail through a node but do not themselves accept calls.
+
+[--[ HOW MAIL FLOWS ]--]
+
+When you post in an Echomail conference, your message is packaged
+overnight, your BBS dials its hub, and the hub aggregates messages
+from every node beneath it. Hubs forward upward. Up at the zone
+gates, regional traffic gets exchanged with other zones via more
+expensive routes. The next morning, the same packet flows back down
+the tree to every node that subscribes to that conference.
+
+A round trip from "post" to "every BBS in your conference can read
+it" is typically 24 to 72 hours. Patience is a feature.
+
+[--[ ZONE MAIL HOUR ]--]
+
+Every FidoNet node is required to be available for mail exchange
+during a fixed daily hour (Zone Mail Hour, ZMH -- 0900 UTC zone-1).
+During ZMH, the line is closed to human users; only mailers may
+connect. This is what makes the routing work at all: you can count
+on the node above you being there.
+
+[--[ NODELIST ]--]
+
+The Nodelist is a giant file -- updated weekly -- that maps every
+addressed node to its phone number, name, sysop, baud rate,
+connection capabilities, and operating hours. You compile it on
+your machine into a binary index that your mailer reads. Without
+the Nodelist, no FidoNet.
+
+[--[ POLICY ]--]
+
+FidoNet has a written Policy document (POLICY4 as of 1989) that
+covers behavior, dispute resolution, and how to remove a node from
+the net. People take it seriously, the way one takes seriously the
+rules of any organization where the alternative to following them
+is being on no organizational chart at all.
+
+[--[ WHY IT MATTERS ]--]
+
+FidoNet is what most BBS users call "the net" without irony. The
+Internet is a thing university people have. FidoNet is what you
+have. There is overlap (UUCP gateways exist, and you can email
+"user@host.fidonet.org" from a Unix box if you know somebody who
+runs one of those gateways), but in 1991 the two communities barely
+acknowledge each other.
+
+This will not stay true much longer.

@@ -1,0 +1,89 @@
+.TH VULN1 1 "2026-04-27" "CECS 378" "CECS 378 Buffer Overflow Lab"
+.SH NAME
+vuln1 \- Phase Phi target; deliberately vulnerable program (see phase-phi(7))
+.SH SYNOPSIS
+.B vuln1
+.B <
+.I PAYLOAD
+.br
+.B vuln1
+.B \-h | \-\-help
+.br
+.B vuln1
+.B \-V | \-\-version
+.SH DESCRIPTION
+If you have not read
+.BR mainframe (7),
+do so first. The attack approach is in
+.BR phase-phi (7).
+
+.B vuln1
+is the warmup target. At startup it prints two lines to standard output:
+.RS
+.nf
+[buffer @ 0x\fIADDR\fP, size N, pad K]
+[saved-eip @ 0x\fIADDR\fP]
+.fi
+.RE
+The first is the runtime address of its fixed-size stack buffer; the
+second is the runtime address of the saved-EIP slot in this stack frame
+(the slot a stack overflow must overwrite to redirect control flow).
+.B vuln1
+then flushes stdout, reads up to roughly 8 KiB from standard input in
+one
+.BR read (2)
+call, and copies it into the buffer using
+.BR strcpy (3)
+without bounds checking. Because both addresses are leaked
+.I before
+the copy, the same process can both observe and use them even under
+Address Space Layout Randomization
+.RB ( ASLR ),
+and the distance from the buffer to the saved-EIP slot does not have to
+be guessed from compiler-dependent layout.
+
+It was compiled with stack canaries disabled, position-independent
+code disabled, and an executable stack:
+
+.RS
+.nf
+gcc -m32 -fno-stack-protector -no-pie -z execstack
+.fi
+.RE
+
+It is installed setuid to user
+.BR oracle (8),
+who reads
+.IR /srv/flag1.txt .
+
+.SH OPTIONS
+.TP
+.BR \-h ", " \-\-help
+Print a usage summary to standard output and exit 0.
+.TP
+.BR \-V ", " \-\-version
+Print the program version to standard output and exit 0.
+.SH EXIT STATUS
+.TP
+.B 0
+Normal exit.
+.TP
+.B 2
+Misuse (unrecognized argument).
+.SH FILES
+.TP
+.I /srv/flag1.txt
+The flag file readable only by user
+.BR oracle .
+.SH SEE ALSO
+.BR phase-phi (7),
+.BR mainframe (7),
+.BR vuln2 (1),
+.BR oracle (8),
+.BR strcpy (3),
+.BR execstack (8)
+.SH BUGS
+The program is the bug. That is the point.
+.SH HISTORY
+Written in 1996 and has not had a CVE filed against it because it does
+not need one. It is the bug.

@@ -1,0 +1,60 @@
+                          VI(1) QUICK REFERENCE
+                          =====================
+
+vi has two principal states: COMMAND mode and INSERT mode. You begin
+in COMMAND mode. Pressing ESC always returns you to COMMAND mode.
+
+ENTERING INSERT MODE
+    i       insert before cursor
+    a       append after cursor
+    I       insert at start of line
+    A       append at end of line
+    o       open new line below
+    O       open new line above
+
+LEAVING INSERT MODE
+    ESC     return to COMMAND mode (this is non-negotiable)
+
+MOTION (in COMMAND mode)
+    h j k l   left, down, up, right        (the home row, by design)
+    w / b     forward / back one word
+    0 / $     beginning / end of line
+    G         end of file
+    gg        beginning of file        (1G also works)
+    nG        line n  (e.g. 42G goes to line 42)
+
+EDITING
+    x       delete character under cursor
+    dd      delete current line
+    dw      delete word
+    d$      delete to end of line
+    yy      yank (copy) line into buffer
+    p       paste buffer after cursor
+    P       paste buffer before cursor
+    u       undo (you will use this often)
+    .       repeat last edit
+
+SEARCH
+    /pattern    search forward
+    ?pattern    search backward
+    n / N       next / previous match
+
+EX COMMANDS (begin with colon)
+    :w          write
+    :q          quit
+    :wq         write and quit
+    :q!         quit without writing
+    :w name     write to filename
+    :set nu     show line numbers
+    :set nonu   hide line numbers
+    :%s/a/b/g   replace every "a" with "b"
+
+TIPS
+    Use ESC liberally.
+    If your terminal is acting strange, you are in INSERT mode.
+    If a vim hint mentions :Tabular or :NERDTree, you are in vim,
+    not vi. They are not the same thing.
+
+vi was written by Bill Joy at Berkeley for ed users who wanted to
+look at the file. It is older than several of the people reading
+this and it will outlive several more.

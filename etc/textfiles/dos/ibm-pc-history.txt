@@ -1,0 +1,46 @@
+                       A SHORT IBM PC HISTORY
+                       ======================
+
+1981. IBM ships the 5150 Personal Computer. Intel 8088 at 4.77 MHz,
+16 to 256 KB of RAM, one or two single-sided 5.25-inch floppies, no
+hard disk. PC-DOS 1.0 is on a floppy you boot from. List price:
+$1,565 for the floppy-less cassette model, $3,000+ once you put two
+drives and a monitor on it. Adjusted for the dollar's loss of
+weight, that is real money.
+
+The architecture was open. IBM published the BIOS source in the
+Technical Reference manual. This was either a strategic decision or
+an accident; opinions differ. Either way, by 1983 Compaq had
+reverse-engineered the BIOS clean-room and was shipping a portable
+clone, and the floodgates were open.
+
+1983. The IBM PC XT. 10 MB hard disk. The first machine where you
+might genuinely keep more than one program installed at a time.
+PC-DOS 2.0 supports subdirectories. People accustomed to a flat
+disk treat this with appropriate suspicion.
+
+1984. The IBM PC AT. Intel 80286 at 6 MHz, eventually 8. 16-bit ISA
+bus. Sixteen colors if you bought the EGA card. AT-class machines
+were the first that could run something resembling Unix; SCO XENIX
+shipped on AT-and-up by mid-decade.
+
+1986. Compaq ships the Deskpro 386 — an Intel 80386 machine — eight
+months before IBM does. The point at which IBM stops setting the
+pace and the rest of the market starts.
+
+1987. PS/2 line. Microchannel bus, OS/2 1.0, 3.5-inch floppy, VGA
+graphics. IBM tries to take the architecture back. Largely fails;
+the clones keep ISA and the market keeps clones.
+
+1991. Where you are reading this. 386 and 486 machines. 4 to 16 MB
+of RAM. SVGA at 800x600 if you spent the money. Wholesale shift to
+Windows 3.0 underway. UNIX boxes still exist on campuses and at
+banks. BSD 4.2 still runs on a VAX in a closet somewhere — possibly
+this closet.
+
+What this matters for: software written when the 8088 was new
+assumed almost nothing about its environment. There was no
+protected mode. There was no separation of process address spaces.
+There were no execute-only pages. The buffer-overflow bug class
+predates all of those and assumes none of them. The PC came of age
+in a security model that had not yet learned to be one.
