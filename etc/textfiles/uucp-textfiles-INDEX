@@ -1,0 +1,20 @@
+                  /var/spool/uucp/textfiles/INDEX
+                  ===============================
+
+This index lists files in /var/spool/uucp/textfiles/ ONLY. Other
+textfiles exist elsewhere on this system. Use `find(1)` and `grep(1)`
+to discover them.
+
+bbs/bbs-sysop-handbook.txt
+        Sysop handbook excerpt. Running a single-line board.
+
+bbs/fidonet-overview.txt
+        FidoNet — the BBS-era e-mail / file-transfer network.
+
+bbs/ansi-art-primer.txt
+        ANSI X3.64 escape sequences and ANSI art construction.
+
+news/operation-sundevil-1990.txt
+        News summary. The May 1990 raids and the founding of the EFF.
+
+[--EOF--]

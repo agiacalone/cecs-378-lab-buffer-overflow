@@ -1,0 +1,81 @@
+#!/bin/sh
+# /etc/update-motd.d/99-mainframe-banner
+#
+# pam_motd runs scripts in this directory at login (sshd, console).
+# Output is concatenated into the MOTD shown to the user before their
+# shell starts — independent of which shell they have, what their
+# personal dotfiles do, or whether their .profile sources /etc/profile.
+# This is the bulletproof path for the dial-in flavor.
+#
+# Numbered 99 so it prints AFTER the static /etc/motd box, completing
+# the "static intro -> animated dial-in" sequence.
+
+# Identify the target user. pam_motd runs us as root, so $USER /
+# $LOGNAME / `id -un` all resolve to root. Newer pam_motd sets
+# PAM_USER; older does not. The lab's only interactive user is
+# 'student' by design, so fall back to that hardcoded value rather
+# than greet the wrong name.
+target_user="${PAM_USER:-}"
+if [ -z "$target_user" ] || [ "$target_user" = "root" ]; then
+    target_user="student"
+fi
+
+# ANSI escapes
+ESC=$(printf '\033')
+CYAN="${ESC}[36m"
+RED="${ESC}[31m"
+GRN="${ESC}[32m"
+RST="${ESC}[0m"
+BEL=$(printf '\007')
+
+# Paced dial-up sequence. (Some pam_motd implementations buffer, in
+# which case the sequence prints all at once — still themed, just less
+# dramatic.)
+sleep 0.3
+printf '\nATDT 5624851234\n'
+sleep 0.4
+printf '\nCONNECT 2400\n'
+sleep 0.2
+printf '%s' "$BEL"
+sleep 0.4
+
+printf '%s' "$CYAN"
+cat <<'BANNER'
+
+       _________________________________________________________
+      |                                                         |
+      |   M A I N F R A M E    4 . 2   B S D                    |
+      |   csulb-mainframe.edu                                   |
+      |                                                         |
+BANNER
+printf '%s' "$RST"
+
+printf '%s' "$CYAN"; printf '      |   '; printf '%s' "$RST"
+printf '%s' "$RED";  printf 'PRIVATE SYSTEM.   AUTHORIZED USERS ONLY.            '; printf '%s' "$RST"
+printf '%s' "$CYAN"; printf '|\n'
+printf '      |   '
+printf '%s' "$RED";  printf 'ALL ACTIVITY IS LOGGED AND MAY BE PROSECUTED        '; printf '%s' "$RST"
+printf '%s' "$CYAN"; printf '|\n'
+printf '      |   '
+printf '%s' "$RED";  printf 'UNDER 18 U.S.C. SS 1030.                            '; printf '%s' "$RST"
+printf '%s' "$CYAN"; printf '|\n'
+
+cat <<'BANNER'
+      |                                                         |
+      |   System Operator:   sysop@csulb-mainframe.edu          |
+      |   Maintenance:       Sunday 0200-0400 PST               |
+      |_________________________________________________________|
+
+BANNER
+printf '%s' "$RST"
+
+printf 'Last login: Tue Apr 16 23:47:06 1991 from gw.lod.org\n\n'
+
+printf '%s' "$GRN"
+printf '       sysop:  welcome, %s.\n' "$target_user"
+printf '       sysop:  briefing.  type:   man mainframe\n'
+printf '       sysop:  good luck.\n'
+printf '%s' "$RST"
+printf '\n'
+
+exit 0

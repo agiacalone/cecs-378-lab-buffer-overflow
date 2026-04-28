@@ -1,0 +1,51 @@
+.TH PLEDGE 1 "2026-04-27" "CECS 378" "CECS 378 Buffer Overflow Lab"
+.SH NAME
+pledge \- affirm authorship of your exploits; required before submission
+.SH SYNOPSIS
+.B pledge
+.SH DESCRIPTION
+.B pledge
+prints the honor pledge text \(em which includes your handle (read
+from
+.IR ~/.handle ,
+populated by
+.B "make briefing"
+on first run) and today's ISO date \(em and asks you to type the
+pledge back verbatim. On exact match, it prints your honor flag
+(read from
+.IR /srv/honor.txt ,
+mode 0400 owned by
+.BR oracle (8)).
+On mismatch or EOF, it exits non-zero and prints nothing.
+
+The flag value is derived from your repository name; pasting another
+student's flag will fail the autograder.
+
+Copy the printed flag into your
+.B WRITEUP.md
+frontmatter as
+.BR honor-flag .
+
+.SH EXIT STATUS
+.TP
+.B 0
+Pledge affirmed; honor flag printed.
+.TP
+.B 1
+Pledge not affirmed (mismatch, EOF, or missing handle).
+.SH FILES
+.TP
+.I ~/.handle
+Your phreaker handle. Set on first
+.B "make briefing"
+run.
+.TP
+.I /srv/honor.txt
+Source of the honor flag. Mode 0400, owned by
+.BR oracle (8).
+.SH SEE ALSO
+.BR mainframe (7),
+.BR oracle (8)
+.SH BUGS
+None known. If the pledge text is harder than the exploit, you have
+done it right.

@@ -1,0 +1,58 @@
+                          MS-DOS QUICK REFERENCE
+                          ======================
+
+      For DOS 3.3 and later. Most commands work the same on
+      DR-DOS and PC-DOS.
+
+FILE AND DIRECTORY
+    DIR             list files in current directory
+    DIR /W          wide listing
+    DIR /P          page through (when listing scrolls past you)
+    CD path         change directory     (CD .. goes up one)
+    CD              print working directory
+    MD name         make directory       (also: MKDIR)
+    RD name         remove directory     (must be empty; also: RMDIR)
+    COPY a b        copy file a to b     (* and ? wildcards work)
+    MOVE a b        move file (DOS 6.x and later only)
+    DEL name        delete file          (also: ERASE)
+    REN old new     rename file
+    TYPE file       print file to screen
+    MORE < file     paged display
+
+DRIVES AND DISKS
+    A:              switch to drive A
+    C:              switch to drive C
+    FORMAT A:       format floppy in drive A     (BE CAREFUL)
+    FORMAT C:       formats your hard disk       (BE VERY CAREFUL)
+    DISKCOPY A: B:  duplicate floppy
+    CHKDSK          check disk; report sector usage
+    LABEL c:NAME    set volume label
+
+PATH AND ENVIRONMENT
+    PATH            print search path
+    PATH=A;B;C      set search path
+    SET             list environment variables
+    SET FOO=bar     set environment variable
+    PROMPT $P$G     show "C:\>" style prompt
+
+BATCH (.BAT) FILES
+    REM comment     comment line
+    ECHO message    print message
+    ECHO ON|OFF     toggle command echo
+    @command        do not echo this command
+    PAUSE           "Press any key to continue..."
+    GOTO label      jump (label written as :label on its own line)
+    IF EXIST file   conditional
+    IF ERRORLEVEL n conditional on last command's exit code
+
+REDIRECTION
+    cmd > file      stdout to file (overwrite)
+    cmd >> file     stdout to file (append)
+    cmd < file      stdin from file
+    cmd1 | cmd2     pipe (uses temp files internally on DOS)
+
+NOT POSIX. NOT UNIX. Different ancestor entirely. The shell is
+COMMAND.COM. There are no soft links. Filenames are 8.3 (eight
+characters, dot, three-character extension). Case-insensitive.
+Path separator is backslash, which means \n in a filename means
+something completely different than you expect.

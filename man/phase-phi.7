@@ -1,0 +1,225 @@
+.TH PHASE-PHI 7 "2026-04-27" "CECS 378" "CECS 378 Buffer Overflow Lab"
+.SH NAME
+phase-phi \- WALK IN: stage 1 attack against vuln1(1)
+.SH DESCRIPTION
+The first of two phases. The target is
+.BR vuln1 (1).
+The defense table on this binary is nearly empty.
+
+.TS
+center, allbox;
+l l.
+defense	state
+stack canary	off
+NX (executable stack)	OFF
+PIE	off
+ASLR (kernel)	on
+.TE
+
+This is the 1996 attack, with all of 1996's compiler flags --
+adapted for the one defense the host won't let us turn off. Your
+buffer is on the stack and the stack is executable. Place shellcode
+there; overwrite the saved EIP to point at it.
+
+.SS A SMALL CONCESSION TO 2026
+
+The lab runs in GitHub Codespaces, where unprivileged code cannot
+disable
+.BR ASLR (7).
+That makes the classical "compile the address into the exploit"
+trick from Phrack 49:14 unworkable: the stack base shifts on every
+.BR execve (2),
+so an address you read from one process is wrong by the time you
+launch the next.
+
+.B vuln1
+solves this for you. Before it copies your input, it
+.I prints the runtime address of its stack buffer
+and
+.I the runtime address of the saved-EIP slot.
+You read those addresses, build your payload, and feed the payload back
+in -- all in the same process, sharing one randomization. This is the
+modern shape of stack-smashing exploits in the wild.
+
+.SS WHAT YOU NEED TO FIND
+
+.TP
+1.
+The byte offset from the start of
+.I buffer
+to the saved EIP. Subtract the two leaked addresses:
+.B saved-eip - buffer.
+You can also confirm with
+.BR gdb (1)
+on
+.IR vuln1 :
+.B info frame
+inside
+.I exploitable()
+shows both.
+.TP
+2.
+The runtime addresses of
+.I buffer
+and
+.IR saved-eip .
+The program prints both on its first two lines of stdout. Because
+.B ASLR
+is on, these addresses are
+.I valid only for the running process.
+Read them from
+.B vuln1's
+stdout in your exploit and use them the same run.
+.TP
+3.
+x86 32-bit
+.I /bin/sh
+shellcode. The classic 23-byte
+.BR execve (2)
+shellcode (Phrack 49:14, Erickson 0x3) is your starting point, but it
+needs two changes for this lab:
+.RS
+.IP \(bu 3
+Prepend
+.B "sub esp, 0x40"
+(3 bytes:
+.BR "83 ec 40" ).
+ESP after the
+.BR ret
+sits just past the saved-EIP slot, only a few bytes above your
+shellcode. The first
+.B push
+instructions in the textbook shellcode walk ESP down INTO the still-
+executing instructions and corrupt them. Subtracting from ESP up front
+moves it well below the shellcode so pushes land in the (already-
+executed) NOP sled.
+.IP \(bu 3
+Re-elevate before the shell starts.
+.B vuln1
+is setuid
+.BR oracle ,
+so EUID is
+.B oracle
+when your shellcode runs -- but
+.BR dash (1)
+sees EUID != UID at startup and drops EUID back to UID. Your shell
+runs as
+.B student
+and cannot read
+.IR /srv/flag1.txt .
+Insert
+.BR geteuid (2)
++
+.BR setreuid (2)
+to set RUID = EUID before
+.BR execve (2).
+See "setuid drop" below.
+.RE
+The vuln uses
+.BR memcpy (3)
+now (no NUL truncation), but keeping the shellcode NUL-free is still a
+good habit -- many real targets use string functions for the copy.
+
+.SS THE PAYLOAD SHAPE
+
+.nf
+[ NOP sled ][ shellcode ][ &target (4 bytes) ]
+.fi
+
+Total length is exactly
+.B "(offset + 4)"
+so the last 4 bytes overwrite the saved return address.
+.I &target
+is some address inside your NOP sled, computed from the
+.I &buffer
+that
+.B vuln1
+just leaked you. Use NOPs (0x90) for any padding -- traditional even
+when the copy is
+.BR memcpy (3)
+because they make the landing zone wider for slightly-wrong target
+addresses.
+
+.SS SETUID DROP
+
+.B vuln1
+is setuid
+.BR oracle .
+The kernel sets EUID = oracle, RUID = student when you run it.
+.BR execve (2)
+preserves both across the new process, so your spawned
+.I /bin/sh
+inherits EUID = oracle. But Linux
+.BR dash (1)
+(the default
+.IR /bin/sh )
+detects EUID != RUID at startup and drops EUID = RUID -- a hardening
+measure against accidental privilege leak. After the drop your shell
+runs as
+.B student
+and the 0400-mode flag is unreadable. The kernel-level setuid drop
+also takes the saved-set-UID with it, so there's no shell-side
+recovery.
+
+The fix is to make EUID == RUID before
+.BR execve (2)
+fires, so dash has nothing to drop. Two extra syscalls do it:
+.IP
+.nf
+geteuid()              \(-> eax (= oracle's uid)
+setreuid(eax, eax)     \(-> sets RUID and EUID to oracle
+execve("/bin/sh", ...) \(-> dash sees EUID == UID, no drop
+.fi
+.PP
+This is general -- every setuid-binary exploit that ends in a
+.BR system (3)
+or
+.BR execve (2)
+of a shell has to deal with it. The reference exploit (instructor
+copy) uses the chain above.
+
+.SS THE EXPLOIT SHAPE
+
+Spawn
+.B vuln1
+with two pipes (one for its stdin, one for its stdout). Parse out
+.I &buffer
+and
+.I &saved-eip
+from the leak header, derive your offset, construct the payload, and
+write it to its stdin in a single
+.BR write (2);
+then feed the post-shell commands. The starter
+.B exploit1.c
+ships this scaffolding for you; the three things left to fill in are
+the shellcode bytes, the offset (one subtraction), and the payload
+construction.
+
+.SS WHEN IT WORKS
+
+.B vuln1
+is setuid
+.BR oracle .
+A successful exploit gives you a shell with
+.B oracle's
+effective uid. That shell can read
+.IR /srv/flag1.txt .
+Capture the flag, paste it into your
+.BR WRITEUP.md ,
+and commit your
+.BR exploit1.c .
+
+.SH SEE ALSO
+.BR mainframe (7),
+.BR vuln1 (1),
+.BR gdb-quickref (7),
+.BR oracle (8),
+.BR phase-omega (7)
+
+.SH REFERENCES
+"Smashing the Stack for Fun and Profit," Aleph One, Phrack 49:14
+(1996). The attack is the one in section 3.
+
+.SH BUGS
+None. The bug is in
+.BR vuln1 (1).
