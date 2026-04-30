@@ -1,0 +1,118 @@
+.TH MAINFRAME 7 "2026-04-27" "CECS 378" "CECS 378 Buffer Overflow Lab"
+.SH NAME
+mainframe \- briefing for the buffer-overflow lab; read this first
+.SH DESCRIPTION
+You have arrived at
+.BR mainframe ,
+a 4.2 BSD UNIX system. You are not supposed to be here. You will leave
+having stolen two flags belonging to a user named
+.BR oracle (8),
+plus a third flag that records that you did the work yourself.
+
+.SS THE LAB
+
+There are two phases.
+.TP
+.B Phase Phi
+The warmup. No defenses. See
+.BR phase-phi (7).
+.TP
+.B Phase Omega
+NX is on. Your Phase Phi exploit dies. See
+.BR phase-omega (7).
+
+Both phases share the same vulnerable source code, compiled with
+different linker flags. The pedagogical hook is in the linker flag.
+
+.SS YOUR TOOLS
+
+.TP
+.BR gdb-quickref (7)
+The gdb commands you will need: \fIdisas\fR, \fIbreak\fR, \fIinfo
+frame\fR, \fIx/40wx\fR, \fIinfo functions\fR, \fIinfo shared\fR,
+\fIprint system\fR.
+.TP
+.BR pledge (1)
+Honor-pledge utility. Run before submission. Required.
+
+.SS THE TARGETS
+
+The phase pages name the binaries and describe the attack approach.
+This is deliberate: you read orientation first, you choose your phase
+second, and only then do you meet the target. Type:
+.IP
+.B "    man phase-phi"
+.IP
+\-or\-
+.IP
+.B "    man phase-omega"
+
+.SS YOUR DELIVERABLES
+
+See
+.B README.md
+in the workspace root. The autograder requires three flags in your
+.B WRITEUP.md
+frontmatter:
+.B flag1 ,
+.B flag2 ,
+and
+.BR honor-flag .
+The honor flag comes from
+.BR pledge (1).
+A missing honor flag voids the submission.
+
+.SS YOUR WORK IS YOURS
+
+Your binary is not your classmate's binary. Buffer size and stack
+padding are derived from your repository name at container build time.
+An exploit that works against someone else's binary will not work
+against yours. Hardcode nothing without verifying it in
+.B your
+codespace's gdb. The autograder runs against
+.B your
+seed; sharing exploits is wasted typing.
+
+.SS THIS BOX HAS HISTORY ON IT
+.PP
+This box was a working system. Files are scattered. There are
+textfiles older than you about the people who wrote things like the
+one you are reading now. Use
+.BR find (1)
+and
+.BR grep (1).
+Use
+.BR locate (1).
+Use
+.BR apropos (1).
+Welcome to Unix.
+
+.SH SEE ALSO
+.BR phase-phi (7),
+.BR phase-omega (7),
+.BR gdb-quickref (7),
+.BR vuln1 (1),
+.BR vuln2 (1),
+.BR pledge (1),
+.BR oracle (8)
+
+.SH REFERENCES
+.PP
+"Smashing the Stack for Fun and Profit," Aleph One, Phrack 49:14
+(1996). Required reading.
+.PP
+"Hacking: The Art of Exploitation," 2nd ed., Jon Erickson, ch. 0x3.
+Recommended.
+.PP
+\fIThe Art of Unix Programming\fR, Eric S. Raymond, ch. 11
+("Interfaces"). Recommended.
+
+.SH BUGS
+The system is the bug. That is the point.
+
+.SH HISTORY
+.PP
+In 1991, if you could find the phone number, you could find a Unix
+box. If you could find a Unix box, you could find a flaw. The phone
+numbers got harder. The flaws did not. You are looking at one of the
+flaws.

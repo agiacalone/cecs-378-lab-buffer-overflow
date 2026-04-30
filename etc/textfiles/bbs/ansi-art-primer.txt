@@ -1,0 +1,66 @@
+                          ANSI ART -- A PRIMER
+                          ====================
+
+If you ever logged in to a BBS and watched a colored skull or a
+bright-cyan castle slowly draw itself a line at a time, you have
+seen ANSI art. This is a short note on how it works.
+
+[--[ THE ESCAPE SEQUENCE ]--]
+
+ANSI X3.64 (1979) defines a set of in-band terminal control codes.
+On a serial line, your terminal interprets bytes mostly as
+characters, but sequences beginning with ESC '[' are commands.
+The first byte is 0x1B, which on most keyboards is the ESC key.
+
+For an art-drawing BBS, the relevant commands are:
+
+    ESC [ y ; x H        move cursor to row y, column x
+    ESC [ n A | B | C | D    move cursor up / down / right / left
+    ESC [ 2 J            clear screen, cursor to top-left
+    ESC [ K              clear from cursor to end of line
+    ESC [ 7 m            reverse video
+    ESC [ 0 m            reset all attributes
+    ESC [ 5 m            blink (use sparingly; you will be hated)
+    ESC [ <fg> ; <bg> m  set color
+
+Foreground colors: 30 black, 31 red, 32 green, 33 yellow, 34 blue,
+35 magenta, 36 cyan, 37 white. Add 60 for bright versions on most
+terminals (90+). Background: 40-47 / 100-107.
+
+[--[ THE EXTRA CHARACTERS ]--]
+
+Code page 437 (the original IBM PC character set) gives you the
+real material:
+
+    Box-drawing single line: + - | (use 196, 179, 218, 191, ...)
+    Box-drawing double line: same idea, codes 200-206 etc.
+    Block drawing:           full block 219, half blocks 220 222
+    Shading:                 25% 176, 50% 177, 75% 178
+    Smiley faces:            01 02 (white on black; black on white)
+    Suits and music notes:   03 04 05 06 13 14
+    Curses-friendly arrows:  16 17 18
+
+You build the picture out of boxes, blocks, and shaded gradients,
+move the cursor with ESC sequences, switch colors, and let it draw
+sequentially. With a 1200-baud modem, the drawing process is part
+of the art.
+
+[--[ TOOLS ]--]
+
+TheDraw and ACiDDraw are the standard editors. Save in .ANS format
+(plain text, ESC sequences embedded). To preview: type the file at
+a DOS prompt with ANSI.SYS loaded, or upload to a BBS that serves
+ANSI menus and watch it draw on a real terminal.
+
+[--[ ART GROUPS ]--]
+
+ACiD, iCE, RaZor 1911 (mostly cracking but does art too), Mistigris.
+They release art "packs" -- tarballs of new pieces, sometimes with
+text-file zines bundled in. You will see logos that say "an ACiD
+production"; that is what the dependency tree looked like in 1991
+for things that draw on a screen.
+
+ANSI art at its peak (roughly 1989-1995) is a real visual idiom
+that the post-VGA / post-web era largely forgets. The constraints
+make it interesting: limited colors, fixed 80x25 grid, sequential
+drawing time as part of the experience. The pieces hold up.

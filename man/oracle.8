@@ -1,0 +1,78 @@
+.TH ORACLE 8 "2026-04-27" "CECS 378" "CECS 378 Buffer Overflow Lab"
+.SH NAME
+oracle \- the user account that owns the flags; speaks only through setuid binaries
+.SH DESCRIPTION
+.B oracle
+is a system user on
+.BR mainframe (7).
+
+.B oracle
+owns three files:
+.IR /srv/flag1.txt ,
+.IR /srv/flag2.txt ,
+and
+.IR /srv/honor.txt .
+All three are mode 0400, readable only by their owner.
+
+.B oracle
+does not log in. Its login shell is
+.BR nologin (8).
+You cannot
+.BR su (1)
+into
+.BR oracle .
+You cannot
+.BR sudo (8)
+as
+.BR oracle .
+
+You can, however, ask
+.B oracle
+to read on your behalf, because three programs on this system run with
+.B oracle's
+effective user id when you execute them: they are setuid. The
+.BR chmod (1)
+mode bit
+.B 4755
+is what makes a binary "speak in
+.B oracle's
+voice."
+
+The setuid binaries are:
+.TP
+.BR vuln1 (1),
+.BR vuln2 (1)
+The targets. These were not designed to take dictation. Convince them
+to take dictation anyway.
+.TP
+.BR pledge (1)
+The honor-pledge utility. This one was designed to read on your
+behalf, but only after you affirm authorship of your exploit.
+
+.SH FILES
+.TP
+.I /srv/flag1.txt
+Phase Phi flag.
+.TP
+.I /srv/flag2.txt
+Phase Omega flag.
+.TP
+.I /srv/honor.txt
+Honor flag (released by
+.BR pledge (1)).
+.SH SEE ALSO
+.BR mainframe (7),
+.BR vuln1 (1),
+.BR vuln2 (1),
+.BR pledge (1),
+.BR chmod (1),
+.BR setuid (2)
+.SH BUGS
+.B oracle
+is not the bug.
+.B oracle
+follows orders. The bug is that
+.BR vuln1 (1)
+and
+.BR vuln2 (1)
+take orders from anyone with a long enough string.
