@@ -1,0 +1,37 @@
+# Build artifacts
+*.o
+*.obj
+*.so
+*.a
+*.dSYM/
+core
+core.*
+vgcore.*
+/build/vuln1
+/build/vuln2
+/build/pledge
+/build/*.exe
+
+# Codespaces / VS Code
+.vscode/
+*.code-workspace
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Editor swaps
+*.swp
+*.swo
+*~
+
+# Student-only screenshots metadata; keep .gitkeep
+student/screenshots/*
+!student/screenshots/.gitkeep
+
+# Temp files
+/tmp/
+/.cache/
+
+# autograde recon contract (generated in CI, published as artifact)
+grading/

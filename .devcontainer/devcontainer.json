@@ -1,0 +1,33 @@
+{
+  "name": "CECS 378 Buffer Overflow Lab",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "..",
+    "args": {
+      "SEED": "${localEnv:GITHUB_REPOSITORY}"
+    }
+  },
+  "remoteUser": "student",
+  "features": {
+    "ghcr.io/devcontainers/features/sshd:1": {
+      "version": "latest"
+    }
+  },
+  "postCreateCommand": "bash tests/verify-environment.sh",
+  "postStartCommand": "ln -sfn \"$(ls -d /workspaces/*/ | head -1)\" /home/student/lab",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "vadimcn.vscode-lldb"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "files.insertFinalNewline": true,
+        "files.trimTrailingWhitespace": true,
+        "workbench.startupEditor": "terminal"
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+                    sysop notes -- private; do not redistribute
+                    ============================================
+
+mon. quiet weekend. only one user dialed in saturday evening, the
+new student account. set them up with the standard quota and the
+usual welcome msg.
+
+the new student is curious -- already poked around /opt/lab. fine.
+that is what those binaries are there for. if they figure it out
+they figure it out. if they ask me how to do it, i will tell them
+to read the man pages.
+
+reminder for myself: there is a strcpy in there that i have been
+meaning to fix for years. i keep forgetting. it does not matter
+unless someone is paying attention. so far nobody has been.
+
+backups went out friday as usual. tape changer is still acting up;
+the second drive sometimes refuses to mount until i power-cycle the
+chassis. should call the vendor. should also fix the strcpy. should
+do a lot of things.
+
+the maintenance window stays sunday 0200-0400 PST. nothing changes
+about that. if i get bored saturday night i will rebuild the
+network stack again, but probably not.
+
+oracle is still oracle. the only one of my users that does not
+talk back. i appreciate that about it.
+
+-- s.
