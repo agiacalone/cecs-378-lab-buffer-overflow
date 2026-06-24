@@ -1,0 +1,137 @@
+name: Autograde
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  grade:
+    # Skip on dev and on the student-facing template repo. Both ship
+    # student/ stubs by design (release-sync.sh copies student/
+    # verbatim), so Autograde would always be cosmetically red on
+    # those two repos. Student forks created via GitHub Classroom
+    # have different repo names, so this guard does NOT skip on
+    # student forks — they run Autograde normally.
+    if: >
+      github.repository != 'agiacalone/cecs-378-lab-buffer-overflow-dev' &&
+      github.repository != 'agiacalone/cecs-378-lab-buffer-overflow'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Self-check notice
+        run: |
+          echo "::notice::Self-check only -- your grade is determined server-side by gradebox."
+
+      - name: Build container with this student's seed
+        run: |
+          docker build \
+            --build-arg SEED="${{ github.repository }}" \
+            -t bo-lab \
+            -f .devcontainer/Dockerfile .
+
+      - name: Compute seed-derived params (mirrors container)
+        id: seed
+        run: |
+          bash .devcontainer/seed.sh "${{ github.repository }}" >> "$GITHUB_OUTPUT"
+          echo "::group::Seed parameters"
+          bash .devcontainer/seed.sh "${{ github.repository }}"
+          echo "::endgroup::"
+
+      - name: Verify vuln.c was not modified
+        run: |
+          docker run --rm -v "$PWD:/check" bo-lab \
+            bash -c 'cd /check && sha256sum -c src/.vuln.c.sha256'
+
+      - name: Verify environment in CI container
+        run: |
+          docker run --rm --privileged bo-lab \
+            bash -lc 'bash /opt/lab/tests/verify-environment.sh'
+
+      - name: Phase Phi -- build + run student exploit
+        id: phase_phi
+        continue-on-error: true
+        run: |
+          FLAG="CECS378{vuln1_$(openssl rand -hex 16)}"
+          docker run --rm --privileged \
+            -v "$PWD/student:/student" \
+            -e EXPECTED_FLAG="$FLAG" \
+            bo-lab bash -lc '
+              set -euo pipefail
+              printf "%s" "$EXPECTED_FLAG" > /srv/flag1.txt
+              chown oracle:oracle /srv/flag1.txt
+              chmod 0400 /srv/flag1.txt
+              gcc -m32 -fno-stack-protector -no-pie -z execstack \
+                  /student/exploit1.c -o /tmp/exploit1
+              OUT=$(echo "cat /srv/flag1.txt; exit" \
+                    | timeout 30 /tmp/exploit1 || true)
+              echo "$OUT" | grep -qF "$EXPECTED_FLAG"
+            '
+
+      - name: Phase Omega -- build + run student exploit
+        id: phase_omega
+        continue-on-error: true
+        run: |
+          FLAG="CECS378{vuln2_$(openssl rand -hex 16)}"
+          docker run --rm --privileged \
+            -v "$PWD/student:/student" \
+            -e EXPECTED_FLAG="$FLAG" \
+            bo-lab bash -lc '
+              set -euo pipefail
+              printf "%s" "$EXPECTED_FLAG" > /srv/flag2.txt
+              chown oracle:oracle /srv/flag2.txt
+              chmod 0400 /srv/flag2.txt
+              gcc -m32 -fno-stack-protector -no-pie \
+                  /student/exploit2.c -o /tmp/exploit2
+              OUT=$(echo "cat /srv/flag2.txt; exit" \
+                    | timeout 30 /tmp/exploit2 || true)
+              echo "$OUT" | grep -qF "$EXPECTED_FLAG"
+            '
+
+      - name: Honor flag -- verify writeup frontmatter
+        id: honor
+        run: |
+          EXPECTED="${{ steps.seed.outputs.HONOR_FLAG }}"
+          GOT=$(awk '/^honor-flag:/{print $2}' student/WRITEUP.md | head -1)
+          if [[ "$GOT" != "$EXPECTED" ]]; then
+            echo "::error::honor-flag mismatch (got '$GOT', expected '$EXPECTED')"
+            exit 1
+          fi
+          echo "honor flag verified."
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "## Autograde Results"
+            echo ""
+            echo "- Phase Phi (WALK IN):     ${{ steps.phase_phi.outcome }}"
+            echo "- Phase Omega (COLD STEEL): ${{ steps.phase_omega.outcome }}"
+            echo "- Honor pledge:            ${{ steps.honor.outcome }}"
+          } >> "$GITHUB_STEP_SUMMARY"
+          # Honor flag is a hard gate: missing/wrong honor → fail entire job.
+          if [[ "${{ steps.honor.outcome }}" != "success" ]]; then
+            exit 1
+          fi
+          # Otherwise: pass if at least one phase passed (partial credit visible).
+          if [[ "${{ steps.phase_phi.outcome }}"  != "success" \
+             && "${{ steps.phase_omega.outcome }}" != "success" ]]; then
+            exit 1
+          fi
+
+      - name: Aggregate result.json (recon contract)
+        if: always()
+        run: >
+          python3 tests/aggregate.py
+          "${{ steps.phase_phi.outcome }}" "${{ steps.phase_omega.outcome }}"
+          "${{ steps.honor.outcome }}"
+
+      - name: Publish grading artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: grading-result
+          path: grading/result.json
+          if-no-files-found: warn

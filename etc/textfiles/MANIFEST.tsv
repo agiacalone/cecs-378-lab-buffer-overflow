@@ -1,0 +1,17 @@
+# CECS 378 Buffer Overflow Lab — textfiles manifest.
+# Format: TAB-separated. Comments start with #. Blank lines OK.
+# Columns: relative_path	target_dir	category	source_url	description
+# SHA-256 sidecars live alongside each file as <filename>.sha256.
+# Extend by appending rows. Re-run tests/lint.sh to verify SHA sidecars exist
+# and re-run docker build to install. The Dockerfile reads this file at build.
+
+bbs/bbs-sysop-handbook.txt	/var/spool/uucp/textfiles/bbs/	bbs	(in-character composition)	BBS sysop handbook excerpt; period commentary on running a single-line board.
+bbs/fidonet-overview.txt	/var/spool/uucp/textfiles/bbs/	bbs	(in-character composition)	FidoNet — the BBS-era inter-board email/file network.
+bbs/ansi-art-primer.txt	/var/spool/uucp/textfiles/bbs/	bbs	(in-character composition)	ANSI X3.64 escape sequences and how BBS-era ANSI art is built.
+news/operation-sundevil-1990.txt	/var/spool/uucp/textfiles/news/	news	(public-record summary; see Sterling, The Hacker Crackdown 1992)	Summary of the May 1990 raids and the founding context of the EFF.
+phrack/p49-14-smashing-the-stack.txt	/var/spool/uucp/textfiles/phrack/	phrack	http://phrack.org/archives/issues/49/14.txt	Aleph One, "Smashing The Stack For Fun And Profit", Phrack 49-14 (Nov 1996). The canonical stack-overflow primer.
+dos/dos-commands-quick-reference.txt	/usr/local/share/dos/	dos	(in-character composition)	MS-DOS 3.3+ command reference. DIR, CD, COPY, batch primitives.
+dos/ibm-pc-history.txt	/usr/local/share/dos/	dos	(public-record summary)	1981-1991 short IBM PC and clone history; closes with the security implication.
+util/vi-help.txt	/usr/local/share/doc/	util	(in-character composition)	vi(1) quick reference — modes, motion, editing, ex commands.
+sysop-home/notes.txt	/home/sysop/	flavor	(in-character composition)	Sysop personal notes; gestures at the lab targets without naming them.
+uucp-textfiles-INDEX	/var/spool/uucp/textfiles/	meta	(generated)	INDEX of files under /var/spool/uucp/textfiles/ only. Renamed to INDEX in target.
