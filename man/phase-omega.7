@@ -1,0 +1,226 @@
+.TH PHASE-OMEGA 7 "2026-04-27" "CECS 378" "CECS 378 Buffer Overflow Lab"
+.SH NAME
+phase-omega \- COLD STEEL: stage 2 attack against vuln2(1)
+.SH DESCRIPTION
+The second of two phases. The target is
+.BR vuln2 (1).
+
+.TS
+center, allbox;
+l l.
+defense	state
+stack canary	off
+NX (executable stack)	ON
+PIE	off
+ASLR (kernel)	on
+.TE
+
+The same source file as
+.BR vuln1 (1),
+linked without
+.BR -z\ execstack
+and built with
+.B \-DLEAK_LIBC
+so it also prints the runtime address of
+.BR printf (3)
+in libc. The stack is no longer executable. Your Phase Phi exploit,
+even with the offset and address recomputed for this binary, will
+fault on the first instruction of the shellcode.
+
+.SS THE LESSON
+
+NX (No-eXecute) defeats classical "shellcode on the stack" attacks.
+You cannot run code from a writable page. You must instead make the
+program return into something that
+.B is
+already executable. The standard answer is the C library, libc, which
+is mapped into every process. Specifically: the
+.BR system (3)
+function takes one string argument and runs it as a shell command. If
+you can return into
+.B system
+with the string
+.B "/bin/sh"
+on top of the stack as its argument, you have your shell.
+
+.SS THE PAYLOAD SHAPE
+
+The naive ret2libc payload is:
+
+.nf
+[ filler to offset ][ &system ][ &exit ][ &"/bin/sh" ]
+.fi
+
+For x86 32-bit cdecl, arguments are passed on the stack in order. The
+.B &exit
+slot is where
+.B system
+will return; we point it at
+.BR exit (3)
+so the program exits cleanly after the shell does.
+
+This payload, however, is not enough by itself. See "setuid drop"
+below.
+
+.SS SETUID DROP
+
+.B vuln2
+is setuid
+.BR oracle .
+The kernel sets EUID = oracle, RUID = student when you run it. So
+when
+.B system("/bin/sh")
+fires,
+.BR dash (1)
+starts with EUID = oracle and RUID = student. Linux dash treats this
+as a privilege boundary it should not cross silently and drops EUID
+back to RUID at startup. The shell that opens for you runs as
+.B student
+and cannot read
+.I /srv/flag2.txt
+(mode 0400, owner
+.BR oracle ).
+The kernel-level setuid drop also takes the saved-set-UID with it, so
+there's no way back from inside the shell.
+
+The fix is to make EUID == RUID before
+.B system
+fires, so dash has nothing to drop. Use
+.BR setreuid (2):
+.IP
+.nf
+setreuid(EUID, EUID)   \(-> sets RUID and EUID to oracle's uid
+system("/bin/sh")      \(-> dash sees EUID == UID, no drop
+.fi
+.PP
+Chaining two libc calls in ret2libc requires one extra trick:
+.B system
+expects its single argument at the top of the stack when it starts.
+.B setreuid
+takes two. Whichever you call first will leave its arguments on the
+stack as garbage that the next call sees in place of its own arguments.
+You need a tiny gadget --
+.I "pop ; pop ; ret"
+-- that pops setreuid's two arguments off the stack and then returns
+into the next call. Such epilogues live throughout libc; any will do.
+The full chain becomes:
+
+.nf
+[ filler to offset ]
+[ &setreuid ][ &pop_pop_ret ][ uid ][ uid ]
+[ &system ][ &exit ][ &"/bin/sh" ]
+.fi
+
+The reference exploit looks the
+.B oracle
+uid up at runtime via
+.BR getpwnam (3).
+
+.SS WHAT YOU NEED TO FIND
+
+.TP
+1.
+The offset for
+.IR vuln2 .
+Recompute. It will not match
+.IR vuln1 .
+.TP
+2.
+The
+.I file offset
+of
+.B system
+inside
+.IR libc.so.6 .
+You're not after its loaded address (which moves with
+.BR ASLR ),
+you're after the unchanging position of the symbol within the library
+file. The shell command:
+.RS
+.nf
+.B "    LIBC=$(ldd /opt/lab/build/vuln2 | awk '/libc/ {print $3}')"
+.B "    nm -D --defined-only \"$LIBC\" | awk '$3==\"system\" {print $1}'"
+.fi
+.RE
+.TP
+3.
+The file offset of
+.B exit
+inside libc. Same approach as
+.BR system .
+.TP
+4.
+The file offset of the string
+.B "/bin/sh"
+inside libc. The shell command is:
+.RS
+.nf
+.B "    strings -a -t x \"$LIBC\" | awk '/\\/bin\\/sh/ {print $1}'"
+.fi
+.RE
+.TP
+5.
+The file offset of
+.BR setreuid (2)
+inside libc. Same approach as
+.BR system .
+.TP
+6.
+The file offset of any
+.I "pop ; pop ; ret"
+gadget inside libc.
+.B objdump -d
+on libc and grep its disassembly for sequential
+.B pop
+opcodes (0x58..0x5f) followed by
+.B "ret"
+(0xc3); pick any address that matches.
+.TP
+7.
+The
+.I runtime
+address of
+.B printf
+in this process.
+.B vuln2
+prints it for you on its third leak line (after
+.I &buffer
+and
+.IR &saved-eip ).
+From that you can compute
+.I libc base = printf_runtime - printf_file_offset
+and from libc base, the runtime addresses of
+.BR system ,
+.BR exit ,
+and the
+.B "/bin/sh"
+string.
+
+.SS WHEN IT WORKS
+
+.B vuln2
+is setuid
+.BR oracle .
+Successful exploitation gives you a shell that can read
+.IR /srv/flag2.txt .
+Same submission shape as Phase Phi.
+
+.SH SEE ALSO
+.BR mainframe (7),
+.BR vuln2 (1),
+.BR phase-phi (7),
+.BR gdb-quickref (7),
+.BR oracle (8),
+.BR system (3),
+.BR exit (3),
+.BR setreuid (2),
+.BR getpwnam (3)
+
+.SH REFERENCES
+"return-to-libc" attack, originally described by Solar Designer (1997)
+on Bugtraq. Also: Erickson, 2nd ed., ch. 0x3 ("Stack-based exploits"),
+section "ret2libc."
+
+.SH BUGS
+The bug is in
+.BR vuln2 (1).

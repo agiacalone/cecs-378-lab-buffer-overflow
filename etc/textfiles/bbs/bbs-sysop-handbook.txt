@@ -1,0 +1,71 @@
+                       BBS SYSOP HANDBOOK -- EXCERPT
+                       =============================
+
+A Bulletin Board System is a single computer running on a single
+phone line. Users dial in one at a time. There is one of you and
+many of them. The handbook below is what every sysop figures out in
+their first six months. Distilled to save you the time.
+
+[--[ HARDWARE ]--]
+
+A 286 is enough for a single-line board. A 386 is comfortable. You
+will want a Hayes-compatible modem (AT command set) at 1200 or
+2400 baud minimum; 9600 or 14400 if you can swing it. A second
+phone line means a second modem, second copy of the BBS software,
+and a router or rotary on the upstream side -- this is no small
+thing.
+
+[--[ SOFTWARE ]--]
+
+PCBoard. WildCat!. Maximus. Renegade. Spitfire. Each has
+opinions about menus, file handling, and what colors a sysop should
+have access to. Pick one, learn it deeply, and do not change it
+unless you must -- migrating message bases between programs is the
+fastest way to end up with three months of conversation in a flat
+file you cannot read.
+
+[--[ FILE AREAS ]--]
+
+Typical layout, by section:
+    A) Utilities
+    B) Games (the largest section, regardless of your intent)
+    C) Programming and source
+    D) Communications
+    E) Text files (the section that will outlive the rest)
+    F) New uploads (curate weekly into the lettered sections)
+
+[--[ RATIO ]--]
+
+Files cost upload bytes. The going ratio is 1:5 -- one byte uploaded
+buys five bytes of download. Some boards run 1:10 or none-at-all
+("leech" boards, generally short-lived). Whatever you set, enforce
+it before the user, not after, and post the policy on the main menu.
+
+Set a daily-time limit (60 minutes is generous, 30 is normal,
+15 is "we have one line and many users").
+
+[--[ MESSAGE BASES ]--]
+
+A message base is a forum: subject lines, threading, and a daily
+quota of new posts. Local-only bases stay on your board. Echomail
+bases travel via FidoNet (see fidonet-overview.txt). You will spend
+more sysop hours moderating message bases than running the
+hardware. Plan accordingly.
+
+[--[ THE PEOPLE ]--]
+
+Most users are quiet and you will never hear from them. A small
+fraction will write you long messages about what is wrong with your
+file ratios. A smaller fraction will try to break into the door
+games to inflate their stats; this is not interesting and not worth
+chasing. The interesting people show up in the message bases.
+
+[--[ FOR THE LOVE OF THE SYSOP ]--]
+
+Run weekly backups to floppies (preferably high-density, preferably
+a different brand than your daily floppies, preferably stored at a
+friend's house). Keep your modem firmware where you remember it.
+Document your DEFAULTS.CFG. When you go down for maintenance, post
+about it ahead of time, and come back when you said you would.
+
+This is the entire handbook. The rest is detail.

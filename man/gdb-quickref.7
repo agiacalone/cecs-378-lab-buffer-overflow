@@ -1,0 +1,82 @@
+.TH GDB-QUICKREF 7 "2026-04-27" "CECS 378" "CECS 378 Buffer Overflow Lab"
+.SH NAME
+gdb-quickref \- gdb commands you will need for the buffer-overflow lab
+.SH DESCRIPTION
+A reference for the gdb subset relevant to this lab. Not a tutorial.
+For more, read
+.BR gdb (1)
+or the GNU
+.B gdb
+manual on the box (\fBinfo gdb\fR).
+
+.SS STARTING
+
+.TP
+.B "gdb /opt/lab/build/vuln1"
+Open vuln1 with full debug symbols.
+.TP
+.B "    (gdb) run AAAAAAAA"
+Run with an argument.
+.TP
+.B "    (gdb) run $(python3 -c 'print(\"A\"*200)')"
+Run with a pattern long enough to overflow.
+
+.SS BREAKPOINTS
+
+.TP
+.B "    (gdb) disas exploitable"
+Disassemble the function. Find the address right after the
+.BR strcpy (3)
+call.
+.TP
+.B "    (gdb) break *0x080491a4"
+Break at that address.
+.TP
+.B "    (gdb) break exploitable"
+Break at function entry.
+
+.SS INSPECTION
+
+.TP
+.B "    (gdb) info frame"
+Print the current stack frame: addresses of saved EIP, saved EBP,
+arguments, locals.
+.TP
+.B "    (gdb) x/40wx $esp"
+Dump 40 32-bit words from the stack pointer.
+.TP
+.B "    (gdb) x/s $eax"
+Dump the string at EAX (after a strcpy, EAX often holds the
+destination).
+.TP
+.B "    (gdb) info functions"
+List all known functions.
+.TP
+.B "    (gdb) info shared"
+List loaded shared libraries (libc lives here).
+.TP
+.B "    (gdb) print system"
+Print the address of
+.BR system (3).
+.TP
+.B "    (gdb) print exit"
+Print the address of
+.BR exit (3).
+
+.SS FINDING /bin/sh IN libc
+
+Outside gdb:
+.IP
+.B "strings -a -t x /lib/i386-linux-gnu/libc.so.6 | grep '/bin/sh'"
+.PP
+Add the offset (left column, hex) to the libc base address (\fIinfo
+shared\fR in gdb) to get the runtime address.
+
+.SH SEE ALSO
+.BR mainframe (7),
+.BR phase-phi (7),
+.BR phase-omega (7),
+.BR gdb (1)
+
+.SH BUGS
+gdb is not the bug. The vulnerable program is the bug.
