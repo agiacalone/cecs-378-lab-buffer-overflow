@@ -1,0 +1,26 @@
+{
+  "tests": [
+    {
+      "name": "Phase Phi -- exploit1 captures flag1",
+      "setup": "",
+      "run": "bash .github/workflows/run-stage.sh phi",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "expected_output": "PASS: phi",
+      "timeout": 5,
+      "points": 60
+    },
+    {
+      "name": "Phase Omega -- exploit2 captures flag2",
+      "setup": "",
+      "run": "bash .github/workflows/run-stage.sh omega",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "expected_output": "PASS: omega",
+      "timeout": 5,
+      "points": 10
+    }
+  ]
+}
